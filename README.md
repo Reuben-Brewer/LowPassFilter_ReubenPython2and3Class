@@ -6,7 +6,7 @@ A class for applying a low-pass filter to incoming data, including
 optional median-filtering (calculating a rolling 5-point-median with the Bose-Nelson algorithm) and 
 optional exponential-smoothing (https://en.wikipedia.org/wiki/Exponential_smoothing). 
 
-Reuben Brewer
+Reuben Brewer, Ph.D.
 
 reuben.brewer@gmail.com
 
