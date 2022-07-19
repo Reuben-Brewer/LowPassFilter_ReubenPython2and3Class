@@ -6,18 +6,24 @@ reuben.brewer@gmail.com
 www.reubotics.com
 
 Apache 2 License
-Software Revision D, 03/013/2022
+Software Revision E, 07/18/2022
 
 Verified working on: Python 2.7, 3.8 for Windows 8.1, 10 64-bit and Raspberry Pi Buster (no Mac testing yet).
 '''
 
 __author__ = 'reuben.brewer'
 
+###########################################################
 from LowPassFilter_ReubenPython2and3Class import *
 from MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class import *
+###########################################################
 
-import os, sys, platform
-import time, datetime
+###########################################################
+import os
+import sys
+import platform
+import time
+import datetime
 import threading
 import collections
 import math, numpy
@@ -25,8 +31,9 @@ import traceback
 import re
 import random
 from random import randint
+###########################################################
 
-###############
+###########################################################
 if sys.version_info[0] < 3:
     from Tkinter import * #Python 2
     import tkFont
@@ -35,14 +42,14 @@ else:
     from tkinter import * #Python 3
     import tkinter.font as tkFont #Python 3
     from tkinter import ttk
-###############
+###########################################################
 
-###############
+###########################################################
 if sys.version_info[0] < 3:
     from builtins import raw_input as input
 else:
     from future.builtins import input as input #"sudo pip3 install future" (Python 3) AND "sudo pip install future" (Python 2)
-###############
+###########################################################
 
 ##########################################################################################################
 ##########################################################################################################
@@ -82,8 +89,8 @@ def UpdateFrequencyCalculation():
 ##########################################################################################################
 if __name__ == '__main__':
 
-    #################################################
-    #################################################
+    ####################################################
+    ####################################################
     global my_platform
 
     if platform.system() == "Linux":
@@ -103,11 +110,11 @@ if __name__ == '__main__':
         my_platform = "other"
 
     print("The OS platform is: " + my_platform)
-    #################################################
-    #################################################
+    ####################################################
+    ####################################################
 
-    #################################################
-    #################################################
+    ####################################################
+    ####################################################
     global USE_LOWPASSFILTER_FLAG
     USE_LOWPASSFILTER_FLAG = 1
 
@@ -116,23 +123,13 @@ if __name__ == '__main__':
 
     global USE_SPECKLE_NOISE_FLAG
     USE_SPECKLE_NOISE_FLAG = 1
-    #################################################
-    #################################################
+    ####################################################
+    ####################################################
     
-    ################################################
-    ################################################
+    ####################################################
+    ####################################################
     global EXIT_PROGRAM_FLAG
     EXIT_PROGRAM_FLAG = 0
-
-    global LowPassFilter_ReubenPython2and3ClassObject
-
-    global LOWPASSFILTER_OPEN_FLAG
-    LOWPASSFILTER_OPEN_FLAG = -1
-    
-    global MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3ClassObject
-
-    global PLOTTER_OPEN_FLAG
-    PLOTTER_OPEN_FLAG = -1
 
     global CurrentTime_MainLoopThread
     CurrentTime_MainLoopThread = -11111.0
@@ -166,6 +163,38 @@ if __name__ == '__main__':
 
     global NoiseAmplitude_Percent0to1OfSinuisoidalInputAmplitude
     NoiseAmplitude_Percent0to1OfSinuisoidalInputAmplitude = 0.1
+    ####################################################
+    ####################################################
+
+    ####################################################
+    ####################################################
+    global LowPassFilter_ReubenPython2and3ClassObject
+
+    global LOWPASSFILTER_OPEN_FLAG
+    LOWPASSFILTER_OPEN_FLAG = -1
+
+    global LowPassFilter_ReubenPython2and3ClassObject_MostRecentDict
+    LowPassFilter_ReubenPython2and3ClassObject_MostRecentDict = dict()
+
+    global LowPassFilter_ReubenPython2and3ClassObject_MostRecentDict_SignalInRaw
+    LowPassFilter_ReubenPython2and3ClassObject_MostRecentDict_SignalInRaw = -11111.0
+
+    global LowPassFilter_ReubenPython2and3ClassObject_MostRecentDict_SignalOutSmoothed
+    LowPassFilter_ReubenPython2and3ClassObject_MostRecentDict_SignalOutSmoothed = -11111.0
+
+    global LowPassFilter_ReubenPython2and3ClassObject_MostRecentDict_DataStreamingFrequency
+    LowPassFilter_ReubenPython2and3ClassObject_MostRecentDict_DataStreamingFrequency = -11111.0
+    ####################################################
+    ####################################################
+
+    ####################################################
+    ####################################################
+    global MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3ClassObject
+
+    global PLOTTER_OPEN_FLAG
+    PLOTTER_OPEN_FLAG = -1
+    ####################################################
+    ####################################################
 
     ####################################################
     ####################################################
@@ -197,7 +226,6 @@ if __name__ == '__main__':
 
     MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3ClassObject_GUIparametersDict = dict([("EnableInternal_MyPrint_Flag", 1),
                                                                                                 ("NumberOfPrintLines", 10),
-                                                                                                ("UseBorderAroundThisGuiObjectFlag", 0),
                                                                                                 ("GraphCanvasWidth", 1280),
                                                                                                 ("GraphCanvasHeight", 700),
                                                                                                 ("GraphCanvasWindowStartingX", 0),
@@ -207,7 +235,7 @@ if __name__ == '__main__':
     global MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3ClassObject_setup_dict
     MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3ClassObject_setup_dict = dict([("GUIparametersDict", MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3ClassObject_GUIparametersDict),
                                                                                         ("ParentPID", os.getpid()),
-                                                                                        ("WatchdogTimerExpirationDurationSeconds_StandAlonePlottingProcess", 0.0),
+                                                                                        ("WatchdogTimerExpirationDurationSeconds_StandAlonePlottingProcess", 5.0),
                                                                                         ("MarkerSize", 3),
                                                                                         ("CurvesToPlotNamesAndColorsDictOfLists", dict([("NameList", ["raw", "smoothed"]),("ColorList", ["Red", "Green"])])),
                                                                                         ("NumberOfDataPointToPlot", 50),
@@ -216,7 +244,7 @@ if __name__ == '__main__':
                                                                                         ("XaxisNumberOfDecimalPlacesForLabels", 3),
                                                                                         ("YaxisNumberOfDecimalPlacesForLabels", 3),
                                                                                         ("XaxisAutoscaleFlag", 1),
-                                                                                        ("YaxisAutoscaleFlag", 0),
+                                                                                        ("YaxisAutoscaleFlag", 1),
                                                                                         ("X_min", 0.0),
                                                                                         ("X_max", 20.0),
                                                                                         ("Y_min", 1.1*SINUSOIDAL_MOTION_INPUT_MinValue),
@@ -268,43 +296,51 @@ if __name__ == '__main__':
     ####################################################
 
     StartingTime_MainLoopThread = getPreciseSecondsTimeStampString()
-    while(CurrentTime_MainLoopThread <= 20.0):
+    while(CurrentTime_MainLoopThread <= 10.0):
         ####################################################
         ####################################################
         CurrentTime_MainLoopThread = getPreciseSecondsTimeStampString() - StartingTime_MainLoopThread
         ####################################################
         ####################################################
 
+        #################################################### GET's
         ####################################################
-        ####################################################
-        time_gain = math.pi / (2.0 * SINUSOIDAL_MOTION_INPUT_ROMtestTimeToPeakAngle)
-        desired_angle_deg_1 = 0.5*(SINUSOIDAL_MOTION_INPUT_MaxValue + SINUSOIDAL_MOTION_INPUT_MinValue) + math.exp(0.1*CurrentTime_MainLoopThread)*0.5 * abs(SINUSOIDAL_MOTION_INPUT_MaxValue - SINUSOIDAL_MOTION_INPUT_MinValue) * math.sin(time_gain * CurrentTime_MainLoopThread)  # AUTOMATIC SINUSOIDAL MOVEMENT
+        if LOWPASSFILTER_OPEN_FLAG == 1:
 
-        if USE_SPECKLE_NOISE_FLAG == 1:
-            NoiseCounter = NoiseCounter + 1
-            if NoiseCounter == 1:
-                NoiseAmplitude = NoiseAmplitude_Percent0to1OfSinuisoidalInputAmplitude*abs(SINUSOIDAL_MOTION_INPUT_MaxValue - SINUSOIDAL_MOTION_INPUT_MinValue)
-                NoiseValue = random.uniform(-1.0*NoiseAmplitude, NoiseAmplitude)
-                desired_angle_deg_1 = desired_angle_deg_1 + NoiseValue
-                NoiseCounter = 0
+            LowPassFilter_ReubenPython2and3ClassObject_MostRecentDict = LowPassFilter_ReubenPython2and3ClassObject.GetMostRecentDataDict()
 
-        LowPassFilter_ReubenPython2and3ClassObject.AddDataPointFromExternalProgram(desired_angle_deg_1)
+            if "DataStreamingFrequency" in LowPassFilter_ReubenPython2and3ClassObject_MostRecentDict:
+                LowPassFilter_ReubenPython2and3ClassObject_MostRecentDict_SignalInRaw = LowPassFilter_ReubenPython2and3ClassObject_MostRecentDict["SignalInRaw"]
+                LowPassFilter_ReubenPython2and3ClassObject_MostRecentDict_SignalOutSmoothed = LowPassFilter_ReubenPython2and3ClassObject_MostRecentDict["SignalOutSmoothed"]
+                LowPassFilter_ReubenPython2and3ClassObject_MostRecentDict_DataStreamingFrequency = LowPassFilter_ReubenPython2and3ClassObject_MostRecentDict["DataStreamingFrequency"]
+
+                #print("LowPassFilter_ReubenPython2and3ClassObject_MostRecentDict_DataStreamingFrequency: " + str(LowPassFilter_ReubenPython2and3ClassObject_MostRecentDict_DataStreamingFrequency))
         ####################################################
         ####################################################
 
+        #################################################### SET's
         ####################################################
-        ####################################################
-        dict_temp = LowPassFilter_ReubenPython2and3ClassObject.GetMostRecentDataDict()
-        raw = dict_temp["SignalInRaw"]
-        smoothed = dict_temp["SignalOutSmoothed"]
-        frequency = dict_temp["DataStreamingFrequency"]
-        #print("frequency: " + str(frequency))
+        if LOWPASSFILTER_OPEN_FLAG == 1:
+            time_gain = math.pi / (2.0 * SINUSOIDAL_MOTION_INPUT_ROMtestTimeToPeakAngle)
+            desired_angle_deg_1 = 0.5*(SINUSOIDAL_MOTION_INPUT_MaxValue + SINUSOIDAL_MOTION_INPUT_MinValue) + math.exp(0.1*CurrentTime_MainLoopThread)*0.5 * abs(SINUSOIDAL_MOTION_INPUT_MaxValue - SINUSOIDAL_MOTION_INPUT_MinValue) * math.sin(time_gain * CurrentTime_MainLoopThread)  # AUTOMATIC SINUSOIDAL MOVEMENT
+
+            ####################################################
+            if USE_SPECKLE_NOISE_FLAG == 1:
+                NoiseCounter = NoiseCounter + 1
+                if NoiseCounter == 1:
+                    NoiseAmplitude = NoiseAmplitude_Percent0to1OfSinuisoidalInputAmplitude*abs(SINUSOIDAL_MOTION_INPUT_MaxValue - SINUSOIDAL_MOTION_INPUT_MinValue)
+                    NoiseValue = random.uniform(-1.0*NoiseAmplitude, NoiseAmplitude)
+                    desired_angle_deg_1 = desired_angle_deg_1 + NoiseValue
+                    NoiseCounter = 0
+            ####################################################
+
+            LowPassFilter_ReubenPython2and3ClassObject.AddDataPointFromExternalProgram(desired_angle_deg_1)
         ####################################################
         ####################################################
 
         ####################################################
         ####################################################
-        if USE_PLOTTER_FLAG == 1:
+        if PLOTTER_OPEN_FLAG == 1:
 
             ####################################################
             MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3ClassObject_MostRecentDict = MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3ClassObject.GetMostRecentDataDict()
@@ -314,13 +350,13 @@ if __name__ == '__main__':
                 MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3ClassObject_MostRecentDict_StandAlonePlottingProcess_ReadyForWritingFlag = MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3ClassObject_MostRecentDict["StandAlonePlottingProcess_ReadyForWritingFlag"]
             else:
                 pass
-                ####################################################
+            ####################################################
 
-                ####################################################
+            ####################################################
             if MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3ClassObject_MostRecentDict_StandAlonePlottingProcess_ReadyForWritingFlag == 1:
-                MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3ClassObject.ExternalAddPointOrListOfPointsToPlot("raw", CurrentTime_MainLoopThread, raw)
-                MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3ClassObject.ExternalAddPointOrListOfPointsToPlot("smoothed", CurrentTime_MainLoopThread, smoothed)
-                ####################################################
+                MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3ClassObject.ExternalAddPointOrListOfPointsToPlot("raw", CurrentTime_MainLoopThread, LowPassFilter_ReubenPython2and3ClassObject_MostRecentDict_SignalInRaw)
+                MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3ClassObject.ExternalAddPointOrListOfPointsToPlot("smoothed", CurrentTime_MainLoopThread, LowPassFilter_ReubenPython2and3ClassObject_MostRecentDict_SignalOutSmoothed)
+            ####################################################
 
         ####################################################
         ####################################################
@@ -328,7 +364,7 @@ if __name__ == '__main__':
         ####################################################
         ####################################################
         UpdateFrequencyCalculation()
-        time.sleep(0.030)  ######## MUST HAVE AT LEAST A SMALL TIMEOUT OR ELSE THE MOTORS RUNS AWAY
+        time.sleep(0.030)
         ####################################################
         ####################################################
 
@@ -336,8 +372,17 @@ if __name__ == '__main__':
     ####################################################
     ####################################################
 
-    MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3ClassObject.ExternalSendEndCommandToStandAloneProcess()
-
+    ################################################# THIS IS THE EXIT ROUTINE!
+    #################################################
     print("Exiting main program 'test_program_for_LowPassFilter_ReubenPython2and3Class.")
+
+    #################################################
+    if PLOTTER_OPEN_FLAG == 1:
+        MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3ClassObject.ExitProgram_Callback()
+    #################################################
+
+    #################################################
+    #################################################
+
 ##########################################################################################################
 ##########################################################################################################

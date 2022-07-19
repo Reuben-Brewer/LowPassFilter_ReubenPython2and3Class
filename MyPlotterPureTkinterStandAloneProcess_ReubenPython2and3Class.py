@@ -3,7 +3,7 @@
 '''
 Reuben Brewer, reuben.brewer@gmail.com, www.reubotics.com
 Apache 2 License
-Software Revision D, 03/13/2022
+Software Revision G, 07/18/2022
 
 Verified working on: Python 3.8 for Windows 8.1, 10 64-bit and Raspberry Pi Buster (no Mac testing yet).
 THE SEPARATE-PROCESS-SPAWNING COMPONENT OF THIS CLASS IS NOT AVAILABLE IN PYTHON 2 DUE TO LIMITATION OF
@@ -12,11 +12,13 @@ THE SEPARATE-PROCESS-SPAWNING COMPONENT OF THIS CLASS IS NOT AVAILABLE IN PYTHON
 
 __author__ = 'reuben.brewer'
 
-import os, sys
-import time, datetime
+#########################################################
+import os
+import sys
+import time
+import datetime
 import numpy
 import multiprocessing
-from collections import OrderedDict
 import collections
 import inspect #To enable 'TellWhichFileWereIn'
 import traceback
@@ -24,11 +26,11 @@ import math
 from decimal import Decimal
 import threading
 import psutil
-import pexpect, subprocess
+import pexpect
+import subprocess
+#########################################################
 
-from GetPIDsByProcessEnglishNameAndOptionallyKill import *
-
-###############
+#########################################################
 if sys.version_info[0] < 3:
     from Tkinter import * #Python 2
     import tkFont
@@ -45,29 +47,29 @@ else:
 
 #print("Tkinter version: " + str(TkVersion))
 #print("Tkinter.TclVersion = " + str(TclVersion))
-###############
+#########################################################
 
-###############
+#########################################################
 if sys.version_info[0] < 3:
     import Queue  # Python 2
 else:
     import queue as Queue  # Python 3
-###############
+#########################################################
 
-###############
+#########################################################
 if sys.version_info[0] < 3:
     from builtins import raw_input as input
 else:
     from future.builtins import input as input #"sudo pip3 install future" (Python 3) AND "sudo pip install future" (Python 2)
-###############
+#########################################################
 
-###############
+#########################################################
 import platform
 if platform.system() == "Windows":
     import ctypes
     winmm = ctypes.WinDLL('winmm')
     winmm.timeBeginPeriod(1) #Set minimum timer resolution to 1ms so that time.sleep(0.001) behaves properly.
-###############
+#########################################################
 
 class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subclass the Tkinter Frame
 
@@ -80,9 +82,18 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         #########################################################
         #########################################################
         #########################################################
-
         if sys.version_info[0] >= 3:
-            multiprocessing.set_start_method('spawn') #fork  spawn #THIS IS THE MAGIC LINE THAT ALLOWS WORKING ON RASPBERRY-PI
+
+            try: #MUST PUT IN TRY TO PREVENT ERROR, "raise RuntimeError('context has already been set')"
+                multiprocessing_StartMethod = multiprocessing.get_start_method()
+                print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: multiprocessing.get_start_method(): " + str(multiprocessing_StartMethod))
+                if multiprocessing_StartMethod != "spawn":
+                    print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: Issuing multiprocessing.set_start_method('spawn').")
+                    multiprocessing.set_start_method('spawn') #fork  spawn #THIS IS THE MAGIC LINE THAT ALLOWS WORKING ON RASPBERRY-PI
+            except:
+                exceptions = sys.exc_info()[0]
+                print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: multiprocessing.set_start_method('spawn') Exceptions: %s" % exceptions)
+
             '''
             From: https://docs.python.org/3/library/multiprocessing.html#multiprocessing-programming
             spawn
@@ -125,7 +136,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
             else:
                 self.GUI_RootAfterCallbackInterval_Milliseconds_IndependentOfParentRootGUIloopEvents = 15 #Will get us around 30Hz actual when plottting 2 curves with 100 data points each and 35 tick marks on each axis
 
-            print("GUI_RootAfterCallbackInterval_Milliseconds_IndependentOfParentRootGUIloopEvents = " + str(self.GUI_RootAfterCallbackInterval_Milliseconds_IndependentOfParentRootGUIloopEvents))
+            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: GUI_RootAfterCallbackInterval_Milliseconds_IndependentOfParentRootGUIloopEvents: " + str(self.GUI_RootAfterCallbackInterval_Milliseconds_IndependentOfParentRootGUIloopEvents))
             ##########################################
 
             ##########################################
@@ -134,7 +145,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
             else:
                 self.EnableInternal_MyPrint_Flag = 0
 
-            print("EnableInternal_MyPrint_Flag: " + str(self.EnableInternal_MyPrint_Flag))
+            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: EnableInternal_MyPrint_Flag: " + str(self.EnableInternal_MyPrint_Flag))
             ##########################################
 
             ##########################################
@@ -143,7 +154,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
             else:
                 self.PrintToConsoleFlag = 1
 
-            print("PrintToConsoleFlag: " + str(self.PrintToConsoleFlag))
+            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: PrintToConsoleFlag: " + str(self.PrintToConsoleFlag))
             ##########################################
 
             ##########################################
@@ -152,25 +163,16 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
             else:
                 self.NumberOfPrintLines = 10
 
-            print("NumberOfPrintLines = " + str(self.NumberOfPrintLines))
+            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: NumberOfPrintLines: " + str(self.NumberOfPrintLines))
             ##########################################
 
-            ##########################################
-            if "UseBorderAroundThisGuiObjectFlag" in self.GUIparametersDict:
-                self.UseBorderAroundThisGuiObjectFlag = self.PassThrough0and1values_ExitProgramOtherwise("UseBorderAroundThisGuiObjectFlag", self.GUIparametersDict["UseBorderAroundThisGuiObjectFlag"])
-            else:
-                self.UseBorderAroundThisGuiObjectFlag = 0
-
-            print("UseBorderAroundThisGuiObjectFlag: " + str(self.UseBorderAroundThisGuiObjectFlag))
-            ##########################################
-    
             ##########################################
             if "GraphCanvasWidth" in self.GUIparametersDict:
                 self.GraphCanvasWidth = self.PassThroughFloatValuesInRange_ExitProgramOtherwise("GraphCanvasWidth", self.GUIparametersDict["GraphCanvasWidth"], 0.0, 1920.0)
             else:
                 self.GraphCanvasWidth = 640.0
     
-            print("GraphCanvasWidth = " + str(self.GraphCanvasWidth))
+            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: GraphCanvasWidth: " + str(self.GraphCanvasWidth))
             ##########################################
     
             ##########################################
@@ -179,7 +181,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
             else:
                 self.GraphCanvasHeight = 480.0
     
-            print("GraphCanvasHeight = " + str(self.GraphCanvasHeight))
+            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: GraphCanvasHeight: " + str(self.GraphCanvasHeight))
             ##########################################
     
             ##########################################
@@ -188,7 +190,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
             else:
                 self.GraphCanvasWindowStartingX = 0.0
     
-            print("GraphCanvasWindowStartingX = " + str(self.GraphCanvasWindowStartingX))
+            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: GraphCanvasWindowStartingX: " + str(self.GraphCanvasWindowStartingX))
             ##########################################
     
             ##########################################
@@ -197,15 +199,15 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
             else:
                 self.GraphCanvasWindowStartingY = 0.0
     
-            print("GraphCanvasWindowStartingY = " + str(self.GraphCanvasWindowStartingY))
+            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: GraphCanvasWindowStartingY: " + str(self.GraphCanvasWindowStartingY))
             ##########################################
 
         else:
             self.GUIparametersDict = dict()
             self.USE_GUI_FLAG = 0
-            print("No GUIparametersDict present, setting USE_GUI_FLAG = " + str(self.USE_GUI_FLAG))
+            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: No GUIparametersDict present, setting USE_GUI_FLAG: " + str(self.USE_GUI_FLAG))
 
-        print("GUIparametersDict = " + str(self.GUIparametersDict))
+        #print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: GUIparametersDict: " + str(self.GUIparametersDict))
         ##########################################
         ##########################################
 
@@ -215,7 +217,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.ParentPID = -11111
 
-        print("ParentPID = " + str(self.ParentPID))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: ParentPID: " + str(self.ParentPID))
         ##########################################
 
         ##########################################
@@ -224,7 +226,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.WatchdogTimerDurationSeconds_ExpirationWillEndStandAlonePlottingProcess = 0.0
 
-        print("WatchdogTimerDurationSeconds_ExpirationWillEndStandAlonePlottingProcess = " + str(self.WatchdogTimerDurationSeconds_ExpirationWillEndStandAlonePlottingProcess))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: WatchdogTimerDurationSeconds_ExpirationWillEndStandAlonePlottingProcess: " + str(self.WatchdogTimerDurationSeconds_ExpirationWillEndStandAlonePlottingProcess))
         ##########################################
 
         ##########################################
@@ -233,7 +235,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.CurvesToPlotNamesAndColorsDictOfLists = dict([(list(), "NameList"),(list(), "ColorList")])
 
-        print("CurvesToPlotNamesAndColorsDictOfLists = " + str(self.CurvesToPlotNamesAndColorsDictOfLists))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: CurvesToPlotNamesAndColorsDictOfLists: " + str(self.CurvesToPlotNamesAndColorsDictOfLists))
         ##########################################
 
         ##########################################
@@ -242,7 +244,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.NumberOfDataPointToPlot = 10
 
-        print("NumberOfDataPointToPlot = " + str(self.NumberOfDataPointToPlot))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: NumberOfDataPointToPlot: " + str(self.NumberOfDataPointToPlot))
         ##########################################
 
         ##########################################
@@ -251,7 +253,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.XaxisNumberOfTickMarks = 30
 
-        print("XaxisNumberOfTickMarks = " + str(self.XaxisNumberOfTickMarks))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: XaxisNumberOfTickMarks: " + str(self.XaxisNumberOfTickMarks))
         ##########################################
 
         ##########################################
@@ -260,7 +262,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.YaxisNumberOfTickMarks = 30
 
-        print("YaxisNumberOfTickMarks = " + str(self.YaxisNumberOfTickMarks))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: YaxisNumberOfTickMarks: " + str(self.YaxisNumberOfTickMarks))
         ##########################################
 
         ##########################################
@@ -269,7 +271,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.XaxisNumberOfDecimalPlacesForLabels = 1
 
-        print("XaxisNumberOfDecimalPlacesForLabels = " + str(self.XaxisNumberOfDecimalPlacesForLabels))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: XaxisNumberOfDecimalPlacesForLabels: " + str(self.XaxisNumberOfDecimalPlacesForLabels))
         ##########################################
 
         ##########################################
@@ -278,7 +280,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.YaxisNumberOfDecimalPlacesForLabels = 1
 
-        print("YaxisNumberOfDecimalPlacesForLabels = " + str(self.YaxisNumberOfDecimalPlacesForLabels))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: YaxisNumberOfDecimalPlacesForLabels: " + str(self.YaxisNumberOfDecimalPlacesForLabels))
         ##########################################
 
         ##########################################
@@ -287,7 +289,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.MarkerSize = 2.0
 
-        print("MarkerSize = " + str(self.MarkerSize))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: MarkerSize: " + str(self.MarkerSize))
         ##########################################
 
         ##########################################
@@ -296,7 +298,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.X_min = 0.0
 
-        print("X_min = " + str(self.X_min))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: X_min: " + str(self.X_min))
         ##########################################
 
         ##########################################
@@ -305,7 +307,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.X_max = 10.0
 
-        print("X_max = " + str(self.X_max))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: X_max: " + str(self.X_max))
         ##########################################
 
         ##########################################
@@ -314,7 +316,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.Y_min = -10.0
 
-        print("Y_min = " + str(self.Y_min))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: Y_min: " + str(self.Y_min))
         ##########################################
 
         ##########################################
@@ -323,7 +325,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.Y_max = 10.0
 
-        print("Y_max = " + str(self.Y_max))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: Y_max: " + str(self.Y_max))
         ##########################################
 
         ##########################################
@@ -332,7 +334,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.XaxisAutoscaleFlag = 1
 
-        print("XaxisAutoscaleFlag = " + str(self.XaxisAutoscaleFlag))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: XaxisAutoscaleFlag: " + str(self.XaxisAutoscaleFlag))
 
         if self.XaxisAutoscaleFlag == 1:
             self.X_min = 0  # Have to override any other X_min, X_max values that may have been passed-in in the setup_dict
@@ -345,7 +347,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.YaxisAutoscaleFlag = 1
 
-        print("YaxisAutoscaleFlag = " + str(self.YaxisAutoscaleFlag))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: YaxisAutoscaleFlag: " + str(self.YaxisAutoscaleFlag))
 
         if self.YaxisAutoscaleFlag == 1:
             self.Y_min = 0  # Have to override any other X_min, X_max values that may have been passed-in in the setup_dict
@@ -358,7 +360,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.XaxisDrawnAtBottomOfGraph = 1
 
-        print("XaxisDrawnAtBottomOfGraph = " + str(self.XaxisDrawnAtBottomOfGraph))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: XaxisDrawnAtBottomOfGraph: " + str(self.XaxisDrawnAtBottomOfGraph))
         ##########################################
 
         ##########################################
@@ -367,7 +369,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.ShowLegendFlag = 0
 
-        print("ShowLegendFlag = " + str(self.ShowLegendFlag))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: ShowLegendFlag: " + str(self.ShowLegendFlag))
         ##########################################
 
         ##########################################
@@ -376,7 +378,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.XaxisLabelString = ""
 
-        print("XaxisLabelString = " + str(self.XaxisLabelString))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: XaxisLabelString: " + str(self.XaxisLabelString))
         ##########################################
 
         ##########################################
@@ -385,7 +387,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.YaxisLabelString = ""
 
-        print("YaxisLabelString = " + str(self.YaxisLabelString))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: YaxisLabelString: " + str(self.YaxisLabelString))
         ##########################################
 
         ##########################################
@@ -418,13 +420,13 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
                     for counter, element in enumerate(NameList):
                         self.AddCurveToPlot(NameList[counter], ColorList[counter])
                 else:
-                    print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__ ERROR: 'CurveList' and 'NameList' must be the same length in self.CurvesToPlotNamesAndColorsDictOfLists.")
+                    print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: Error, 'CurveList' and 'NameList' must be the same length in self.CurvesToPlotNamesAndColorsDictOfLists.")
                     return
             else:
-                print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__ ERROR: 'CurveList' key must be in self.CurvesToPlotNamesAndColorsDictOfLists.")
+                print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: Error, 'CurveList' key must be in self.CurvesToPlotNamesAndColorsDictOfLists.")
                 return
         else:
-            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__ ERROR: 'NameList' key must be in self.CurvesToPlotNamesAndColorsDictOfLists.")
+            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: Error, 'NameList' key must be in self.CurvesToPlotNamesAndColorsDictOfLists.")
             return
         ##########################################
 
@@ -440,9 +442,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
 
         self.StandAlonePlottingProcess_ReadyForWritingFlag = 0
 
-        self.MostRecentDataDict = dict([("CurvesToPlotDictOfDicts", self.CurvesToPlotDictOfDicts),
-                                        ("StandAlonePlottingProcess_ReadyForWritingFlag", self.StandAlonePlottingProcess_ReadyForWritingFlag)])
-
+        self.MostRecentDataDict = dict()
         #########################################################
         #########################################################
         #########################################################
@@ -459,6 +459,20 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
 
     ##########################################################################################################
     ##########################################################################################################
+    def WatchdogTimerCheck(self):
+
+        #############################################
+        if self.WatchdogTimerDurationSeconds_ExpirationWillEndStandAlonePlottingProcess > 0.0:
+            if self.getPreciseSecondsTimeStampString() - self.LastTime_CalculatedFromStandAlonePlottingProcess >= self.WatchdogTimerDurationSeconds_ExpirationWillEndStandAlonePlottingProcess:
+                print("***** MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class, Watchdog fired! *****")
+                self.EXIT_PROGRAM_FLAG = 1
+        #############################################
+
+    ##########################################################################################################
+    ##########################################################################################################
+
+    ##########################################################################################################
+    ##########################################################################################################
     def StandAlonePlottingProcess(self, MultiprocessingQueue_Rx_Local, MultiprocessingQueue_Tx_Local, setup_dict): #UNICORN
 
         print("Entering MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class StandAlonePlottingProcess.")
@@ -466,8 +480,6 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         self.ProcessSetupDictAndInitializeVariables(setup_dict)
 
         self.StartGUI()
-
-        #threading.Thread(target=self.WaitForParentThreadToExit).start() #EXPERIMENTAL
 
         self.LastTime_CalculatedFromStandAlonePlottingProcess = self.getPreciseSecondsTimeStampString()
 
@@ -479,15 +491,17 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
             try:
 
                 #############################################
-                if self.WatchdogTimerDurationSeconds_ExpirationWillEndStandAlonePlottingProcess > 0.0:
-                    if self.getPreciseSecondsTimeStampString() - self.LastTime_CalculatedFromStandAlonePlottingProcess >= self.WatchdogTimerDurationSeconds_ExpirationWillEndStandAlonePlottingProcess:
-                        print("***** MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class, Watchdog fired! *****")
-                        break
+                self.WatchdogTimerCheck()
                 #############################################
 
                 #############################################
                 while not MultiprocessingQueue_Rx_Local.empty():
                     try:
+
+                        ###############
+                        self.WatchdogTimerCheck()
+                        ###############
+
                         ###############
                         self.CurrentTime_CalculatedFromStandAlonePlottingProcess = self.getPreciseSecondsTimeStampString()
                         #print("self.CurrentTime_CalculatedFromStandAlonePlottingProcess: " + str(self.CurrentTime_CalculatedFromStandAlonePlottingProcess))
@@ -533,49 +547,36 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         #############################################
         #############################################
 
-        ############ Drain all remaining items in Queues OR ELSE THIS THREAD WON'T DRAIN.
-        while not self.MultiprocessingQueue_Rx.empty():
-            DummyToDrainRemainingItemsInRxQueue = self.MultiprocessingQueue_Rx.get(FALSE)
+        try:  # Need the try/except for if the StandAloneProcess window is closed before that of its parent which is still communicating with it.
+            ############ Drain all remaining items in Queues OR ELSE THIS THREAD WON'T DRAIN.
+            while not self.MultiprocessingQueue_Rx.empty():
+                #print("DummyToDrainRemainingItemsInRxQueue")
+                DummyToDrainRemainingItemsInRxQueue = self.MultiprocessingQueue_Rx.get(FALSE)
+                time.sleep(0.001) #WITHOUT THIS SLEEP, THE PROGRAM WON'T TERMINATE CORRECTLY!
 
-        while not self.MultiprocessingQueue_Tx.empty():
-            DummyToDrainRemainingItemsInTxQueue = self.MultiprocessingQueue_Tx.get(FALSE)
-        ############
+            while not self.MultiprocessingQueue_Tx.empty():
+                #print("DummyToDrainRemainingItemsInTxQueue")
+                DummyToDrainRemainingItemsInTxQueue = self.MultiprocessingQueue_Tx.get(FALSE)
+                time.sleep(0.001) #WITHOUT THIS SLEEP, THE PROGRAM WON'T TERMINATE CORRECTLY!
+            ############
+        except:
+            pass
 
         #############################################
         #############################################
 
-        ############ EXPERIMENTAL Close GUI
-        #self.end_program_GUI_callback() DON'T USE THIS IN A MULTIPROCESSING CONTEXT. INSTEAD, MAKE GUI_THREAD A DAEMON THAT CLOSES AUTOMATICALLY WHEN THE PARENT THREAD CLOSES.
+        ############################################# EXPERIMENTAL Close GUI
+        #self.end_program_GUI_callback() #DON'T USE THIS IN A MULTIPROCESSING CONTEXT. INSTEAD, MAKE GUI_THREAD A DAEMON THAT CLOSES AUTOMATICALLY WHEN THE PARENT THREAD CLOSES.
         #self.GUI_Thread_ThreadingObject.join()
-        ############
+        #############################################
 
-        ############ EXPERIMENTAL Close job DON'T ISSUE THESE COMMANDS FROM THIS THREAD OR ELSE THERE WILL BE ERRORS
+        ############################################# EXPERIMENTAL Close job DON'T ISSUE THESE COMMANDS FROM THIS THREAD OR ELSE THERE WILL BE ERRORS
         #self.job_for_another_core.close()
         #self.job_for_another_core.join_thread()
         #self.job_for_another_core.terminate()
-        ############
+        #############################################
 
         print("Exited MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class.")
-    ##########################################################################################################
-    ##########################################################################################################
-
-    ##########################################################################################################
-    ########################################################################################################## unicorn
-    def WaitForParentThreadToExit(self):
-
-        while self.EXIT_PROGRAM_FLAG == 0:
-            try:
-                [PID_DictWithPIDasKey, PID_DictWithEXEenglishNameAsKey] = GetPIDsByProcessEnglishName("python3")
-
-                print(PID_DictWithPIDasKey)
-                if self.ParentPID not in PID_DictWithPIDasKey:
-                    "PARENT PID HAS ENDED"
-                print("WaitForParentThreadToExit: ")
-                time.sleep(1.0)
-            except:
-                exceptions = sys.exc_info()[0]
-                print("WaitForParentThreadToExit, Exceptions: %s" % exceptions)
-
     ##########################################################################################################
     ##########################################################################################################
 
@@ -593,13 +594,9 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
 
     ##########################################################################################################
     ##########################################################################################################
-    def IsInputList(input, print_result_flag=0):
+    def IsInputList(self, InputToCheck):
 
-        result = isinstance(input, list)
-
-        if print_result_flag == 1:
-            print("IsInputList: " + str(result))
-
+        result = isinstance(InputToCheck, list)
         return result
     ##########################################################################################################
     ##########################################################################################################
@@ -705,19 +702,6 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         while start < stop:
             yield round(start, digits_to_round)
             start += step
-    ##########################################################################################################
-    ##########################################################################################################
-
-    ##########################################################################################################
-    ##########################################################################################################
-    def IsInputList(self, input, print_result_flag = 0):
-
-        result = isinstance(input, list)
-
-        if print_result_flag == 1:
-            self.MyPrint_WithoutLogFile("IsInputList: " + str(result))
-
-        return result
     ##########################################################################################################
     ##########################################################################################################
 
@@ -852,18 +836,36 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
 
     ##########################################################################################################
     ##########################################################################################################
-    def ExternalSendEndCommandToStandAloneProcess(self):
+    def SendEndCommandToStandAloneProcess(self):
 
-        self.MultiprocessingQueue_Rx.put(dict([("EndStandAloneProcessFlag", 1)]))
+        try:
+            self.MultiprocessingQueue_Rx.put(dict([("EndStandAloneProcessFlag", 1)]))
+        except:
+            pass
 
     ##########################################################################################################
     ##########################################################################################################
 
-    ##########################################################################################################
+    ########################################################################################################## unicorn
     ##########################################################################################################
     def ExternalAddPointOrListOfPointsToPlot(self, CurveName, x, y):
 
-        self.MultiprocessingQueue_Rx.put(dict([("CurveName", CurveName), ("x", x), ("y", y)]))
+        if self.IsInputList(CurveName) == 1:
+            #####
+            if len(CurveName) != len(x) or len(CurveName) != len(y):
+                print("ExternalAddPointOrListOfPointsToPlot: ERROR, length of CurveName (" +
+                      str(len(CurveName)) + "), x ("
+                      + str(len(x)) + "), and y (" +
+                      str(len(y)) + ") inputs must all match!")
+            #####
+
+            #####
+            for index, CurveNameElement in enumerate(CurveName):
+                self.MultiprocessingQueue_Rx.put(dict([("CurveName", CurveNameElement), ("x", x[index]), ("y", y[index])]))
+            #####
+
+        else:
+            self.MultiprocessingQueue_Rx.put(dict([("CurveName", CurveName), ("x", x), ("y", y)]))
 
     ##########################################################################################################
     ##########################################################################################################
@@ -904,14 +906,18 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
     ##########################################################################################################
     ##########################################################################################################
 
-    ''' DON'T USE THIS IN A MULTIPROCESSING CONTEXT. INSTEAD, MAKE GUI_THREAD A DAEMON THAT CLOSES AUTOMATICALLY WHEN THE PARENT THREAD CLOSES.
     ##########################################################################################################
     ##########################################################################################################
     def ExitProgram_Callback(self):
 
+        print("Exiting all threads for MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class object")
+
+        self.EXIT_PROGRAM_FLAG = 1
+
+        self.SendEndCommandToStandAloneProcess()
+
     ##########################################################################################################
     ##########################################################################################################
-    '''
 
     ##########################################################################################################
     ##########################################################################################################
@@ -929,14 +935,18 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
     ##########################################################################################################
     def GUI_Thread(self):
 
+        ###################################################
         self.root = Tk()
+        ###################################################
 
+        ###################################################
         self.myFrame = Frame(self.root)
         self.myFrame.grid()
+        ###################################################
 
         ###################################################
         ###################################################
-        #self.root.protocol("WM_DELETE_WINDOW", self.ExitProgram_Callback) #DON'T USE THIS IN A MULTIPROCESSING CONTEXT. INSTEAD, MAKE GUI_THREAD A DAEMON THAT CLOSES AUTOMATICALLY WHEN THE PARENT THREAD CLOSES.
+        self.root.protocol("WM_DELETE_WINDOW", self.ExitProgram_Callback)
         self.root.after(self.GUI_RootAfterCallbackInterval_Milliseconds_IndependentOfParentRootGUIloopEvents, self.__GUI_update_clock)
         self.root.geometry('%dx%d+%d+%d' % (self.GraphCanvasWidth, self.GraphCanvasHeight+20, self.GraphCanvasWindowStartingX, self.GraphCanvasWindowStartingY)) #+20 for debug_label
         ###################################################
@@ -1021,7 +1031,6 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         Y_out = self.GraphCanvasHeight - Y_out #Flip y-axis
 
         return [X_out, Y_out]
-
     ##########################################################################################################
     ##########################################################################################################
 
