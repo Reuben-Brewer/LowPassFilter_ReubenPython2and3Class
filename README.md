@@ -14,9 +14,9 @@ www.reubotics.com
 
 Apache 2 License
 
-Software Revision D, 03/13/2022
+Software Revision E, 07/18/2022
 
-Verified working on:
+Verified working on: 
 
 Python 2.7, 3.8.
 
@@ -30,6 +30,12 @@ Raspberry Pi Buster
 
 ########################### Python module installation instructions, all OS's
 
-No additional Python modules are required.
+LowPassFilter_ReubenPython2and3Class, ListOfModuleDependencies: ['numpy']
+
+LowPassFilter_ReubenPython2and3Class, ListOfModuleDependencies_TestProgram: ['future.builtins', 'MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class']
+
+LowPassFilter_ReubenPython2and3Class, ListOfModuleDependencies_NestedLayers: ['future.builtins', 'numpy', 'pexpect', 'psutil']
+
+LowPassFilter_ReubenPython2and3Class, ListOfModuleDependencies_All: ['future.builtins', 'MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class', 'numpy', 'pexpect', 'psutil']
 
 ###########################
