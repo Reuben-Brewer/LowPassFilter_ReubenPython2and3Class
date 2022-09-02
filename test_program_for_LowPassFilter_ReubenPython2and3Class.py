@@ -6,7 +6,7 @@ reuben.brewer@gmail.com
 www.reubotics.com
 
 Apache 2 License
-Software Revision E, 07/18/2022
+Software Revision F, 08/29/2022
 
 Verified working on: Python 2.7, 3.8 for Windows 8.1, 10 64-bit and Raspberry Pi Buster (no Mac testing yet).
 '''
@@ -45,10 +45,11 @@ else:
 ###########################################################
 
 ###########################################################
-if sys.version_info[0] < 3:
-    from builtins import raw_input as input
-else:
-    from future.builtins import input as input #"sudo pip3 install future" (Python 3) AND "sudo pip install future" (Python 2)
+import platform
+if platform.system() == "Windows":
+    import ctypes
+    winmm = ctypes.WinDLL('winmm')
+    winmm.timeBeginPeriod(1) #Set minimum timer resolution to 1ms so that time.sleep(0.001) behaves properly.
 ###########################################################
 
 ##########################################################################################################
@@ -205,7 +206,6 @@ if __name__ == '__main__':
                                                                         ("ExponentialSmoothingFilterLambda", 0.2)])
 
             LowPassFilter_ReubenPython2and3ClassObject = LowPassFilter_ReubenPython2and3Class(LowPassFilter_ReubenPython2and3ClassObject_setup_dict)
-            time.sleep(0.1)
             LOWPASSFILTER_OPEN_FLAG = LowPassFilter_ReubenPython2and3ClassObject.OBJECT_CREATED_SUCCESSFULLY_FLAG
 
         except:
@@ -271,8 +271,7 @@ if __name__ == '__main__':
     ####################################################
     if LOWPASSFILTER_OPEN_FLAG != 1:
         print("Failed to open LowPassFilter_ReubenPython2and3ClassObject.")
-        input("Press any key (and enter) to exit.")
-        sys.exit()
+        ExitProgram_Callback()
     ####################################################
     ####################################################
 
@@ -280,8 +279,7 @@ if __name__ == '__main__':
     #################################################
     if USE_PLOTTER_FLAG == 1 and PLOTTER_OPEN_FLAG != 1:
         print("Failed to open MyPlotterPureTkinterClass_Object.")
-        input("Press any key (and enter) to exit.")
-        sys.exit()
+        ExitProgram_Callback()
     #################################################
     #################################################
 

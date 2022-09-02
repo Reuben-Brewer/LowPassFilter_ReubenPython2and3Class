@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
 '''
-Reuben Brewer, reuben.brewer@gmail.com, www.reubotics.com
+Reuben Brewer, Ph.D.
+reuben.brewer@gmail.com,
+www.reubotics.com
+
 Apache 2 License
-Software Revision G, 07/18/2022
+Software Revision H, 08/29/2022
 
 Verified working on: Python 3.8 for Windows 8.1, 10 64-bit and Raspberry Pi Buster (no Mac testing yet).
 THE SEPARATE-PROCESS-SPAWNING COMPONENT OF THIS CLASS IS NOT AVAILABLE IN PYTHON 2 DUE TO LIMITATION OF
@@ -20,6 +23,7 @@ import datetime
 import numpy
 import multiprocessing
 import collections
+from copy import * #for deepcopy(dict)
 import inspect #To enable 'TellWhichFileWereIn'
 import traceback
 import math
@@ -86,13 +90,13 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
 
             try: #MUST PUT IN TRY TO PREVENT ERROR, "raise RuntimeError('context has already been set')"
                 multiprocessing_StartMethod = multiprocessing.get_start_method()
-                print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: multiprocessing.get_start_method(): " + str(multiprocessing_StartMethod))
+                print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: multiprocessing.get_start_method(): " + str(multiprocessing_StartMethod))
                 if multiprocessing_StartMethod != "spawn":
-                    print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: Issuing multiprocessing.set_start_method('spawn').")
+                    print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: Issuing multiprocessing.set_start_method('spawn').")
                     multiprocessing.set_start_method('spawn') #fork  spawn #THIS IS THE MAGIC LINE THAT ALLOWS WORKING ON RASPBERRY-PI
             except:
                 exceptions = sys.exc_info()[0]
-                print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: multiprocessing.set_start_method('spawn') Exceptions: %s" % exceptions)
+                print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: multiprocessing.set_start_method('spawn') Exceptions: %s" % exceptions)
 
             '''
             From: https://docs.python.org/3/library/multiprocessing.html#multiprocessing-programming
@@ -110,6 +114,10 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         self.job_for_another_core.start()
         #########################################################
         #########################################################
+        #########################################################
+
+        #########################################################
+        time.sleep(0.25)
         #########################################################
 
         #########################################################
@@ -136,7 +144,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
             else:
                 self.GUI_RootAfterCallbackInterval_Milliseconds_IndependentOfParentRootGUIloopEvents = 15 #Will get us around 30Hz actual when plottting 2 curves with 100 data points each and 35 tick marks on each axis
 
-            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: GUI_RootAfterCallbackInterval_Milliseconds_IndependentOfParentRootGUIloopEvents: " + str(self.GUI_RootAfterCallbackInterval_Milliseconds_IndependentOfParentRootGUIloopEvents))
+            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: GUI_RootAfterCallbackInterval_Milliseconds_IndependentOfParentRootGUIloopEvents: " + str(self.GUI_RootAfterCallbackInterval_Milliseconds_IndependentOfParentRootGUIloopEvents))
             ##########################################
 
             ##########################################
@@ -145,7 +153,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
             else:
                 self.EnableInternal_MyPrint_Flag = 0
 
-            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: EnableInternal_MyPrint_Flag: " + str(self.EnableInternal_MyPrint_Flag))
+            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: EnableInternal_MyPrint_Flag: " + str(self.EnableInternal_MyPrint_Flag))
             ##########################################
 
             ##########################################
@@ -154,7 +162,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
             else:
                 self.PrintToConsoleFlag = 1
 
-            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: PrintToConsoleFlag: " + str(self.PrintToConsoleFlag))
+            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: PrintToConsoleFlag: " + str(self.PrintToConsoleFlag))
             ##########################################
 
             ##########################################
@@ -163,7 +171,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
             else:
                 self.NumberOfPrintLines = 10
 
-            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: NumberOfPrintLines: " + str(self.NumberOfPrintLines))
+            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: NumberOfPrintLines: " + str(self.NumberOfPrintLines))
             ##########################################
 
             ##########################################
@@ -172,7 +180,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
             else:
                 self.GraphCanvasWidth = 640.0
     
-            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: GraphCanvasWidth: " + str(self.GraphCanvasWidth))
+            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: GraphCanvasWidth: " + str(self.GraphCanvasWidth))
             ##########################################
     
             ##########################################
@@ -181,7 +189,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
             else:
                 self.GraphCanvasHeight = 480.0
     
-            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: GraphCanvasHeight: " + str(self.GraphCanvasHeight))
+            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: GraphCanvasHeight: " + str(self.GraphCanvasHeight))
             ##########################################
     
             ##########################################
@@ -190,24 +198,33 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
             else:
                 self.GraphCanvasWindowStartingX = 0.0
     
-            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: GraphCanvasWindowStartingX: " + str(self.GraphCanvasWindowStartingX))
+            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: GraphCanvasWindowStartingX: " + str(self.GraphCanvasWindowStartingX))
             ##########################################
     
             ##########################################
             if "GraphCanvasWindowStartingY" in self.GUIparametersDict:
-                self.GraphCanvasWindowStartingY = int(self.PassThroughFloatValuesInRange_ExitProgramOtherwise("GraphCanvasWindowStartingY", self.GUIparametersDict["GraphCanvasWindowStartingY"], 0.0, 1920.0))
+                self.GraphCanvasWindowStartingY = int(self.PassThroughFloatValuesInRange_ExitProgramOtherwise("GraphCanvasWindowStartingY", self.GUIparametersDict["GraphCanvasWindowStartingY"], 0.0, 1080.0))
             else:
                 self.GraphCanvasWindowStartingY = 0.0
     
-            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: GraphCanvasWindowStartingY: " + str(self.GraphCanvasWindowStartingY))
+            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: GraphCanvasWindowStartingY: " + str(self.GraphCanvasWindowStartingY))
+            ##########################################
+
+            ##########################################
+            if "GraphCanvasWindowTitle" in self.GUIparametersDict:
+                self.GraphCanvasWindowTitle = str(self.GUIparametersDict["GraphCanvasWindowTitle"])
+            else:
+                self.GraphCanvasWindowTitle = "MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class"
+
+            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: GraphCanvasWindowTitle: " + self.GraphCanvasWindowTitle)
             ##########################################
 
         else:
             self.GUIparametersDict = dict()
             self.USE_GUI_FLAG = 0
-            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: No GUIparametersDict present, setting USE_GUI_FLAG: " + str(self.USE_GUI_FLAG))
+            print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: No GUIparametersDict present, setting USE_GUI_FLAG: " + str(self.USE_GUI_FLAG))
 
-        #print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: GUIparametersDict: " + str(self.GUIparametersDict))
+        #print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: GUIparametersDict: " + str(self.GUIparametersDict))
         ##########################################
         ##########################################
 
@@ -217,7 +234,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.ParentPID = -11111
 
-        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: ParentPID: " + str(self.ParentPID))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: ParentPID: " + str(self.ParentPID))
         ##########################################
 
         ##########################################
@@ -226,7 +243,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.WatchdogTimerDurationSeconds_ExpirationWillEndStandAlonePlottingProcess = 0.0
 
-        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: WatchdogTimerDurationSeconds_ExpirationWillEndStandAlonePlottingProcess: " + str(self.WatchdogTimerDurationSeconds_ExpirationWillEndStandAlonePlottingProcess))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: WatchdogTimerDurationSeconds_ExpirationWillEndStandAlonePlottingProcess: " + str(self.WatchdogTimerDurationSeconds_ExpirationWillEndStandAlonePlottingProcess))
         ##########################################
 
         ##########################################
@@ -235,7 +252,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.CurvesToPlotNamesAndColorsDictOfLists = dict([(list(), "NameList"),(list(), "ColorList")])
 
-        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: CurvesToPlotNamesAndColorsDictOfLists: " + str(self.CurvesToPlotNamesAndColorsDictOfLists))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: CurvesToPlotNamesAndColorsDictOfLists: " + str(self.CurvesToPlotNamesAndColorsDictOfLists))
         ##########################################
 
         ##########################################
@@ -244,7 +261,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.NumberOfDataPointToPlot = 10
 
-        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: NumberOfDataPointToPlot: " + str(self.NumberOfDataPointToPlot))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: NumberOfDataPointToPlot: " + str(self.NumberOfDataPointToPlot))
         ##########################################
 
         ##########################################
@@ -253,7 +270,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.XaxisNumberOfTickMarks = 30
 
-        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: XaxisNumberOfTickMarks: " + str(self.XaxisNumberOfTickMarks))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: XaxisNumberOfTickMarks: " + str(self.XaxisNumberOfTickMarks))
         ##########################################
 
         ##########################################
@@ -262,7 +279,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.YaxisNumberOfTickMarks = 30
 
-        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: YaxisNumberOfTickMarks: " + str(self.YaxisNumberOfTickMarks))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: YaxisNumberOfTickMarks: " + str(self.YaxisNumberOfTickMarks))
         ##########################################
 
         ##########################################
@@ -271,7 +288,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.XaxisNumberOfDecimalPlacesForLabels = 1
 
-        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: XaxisNumberOfDecimalPlacesForLabels: " + str(self.XaxisNumberOfDecimalPlacesForLabels))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: XaxisNumberOfDecimalPlacesForLabels: " + str(self.XaxisNumberOfDecimalPlacesForLabels))
         ##########################################
 
         ##########################################
@@ -280,7 +297,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.YaxisNumberOfDecimalPlacesForLabels = 1
 
-        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: YaxisNumberOfDecimalPlacesForLabels: " + str(self.YaxisNumberOfDecimalPlacesForLabels))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: YaxisNumberOfDecimalPlacesForLabels: " + str(self.YaxisNumberOfDecimalPlacesForLabels))
         ##########################################
 
         ##########################################
@@ -289,7 +306,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.MarkerSize = 2.0
 
-        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: MarkerSize: " + str(self.MarkerSize))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: MarkerSize: " + str(self.MarkerSize))
         ##########################################
 
         ##########################################
@@ -298,7 +315,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.X_min = 0.0
 
-        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: X_min: " + str(self.X_min))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: X_min: " + str(self.X_min))
         ##########################################
 
         ##########################################
@@ -307,7 +324,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.X_max = 10.0
 
-        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: X_max: " + str(self.X_max))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: X_max: " + str(self.X_max))
         ##########################################
 
         ##########################################
@@ -316,7 +333,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.Y_min = -10.0
 
-        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: Y_min: " + str(self.Y_min))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: Y_min: " + str(self.Y_min))
         ##########################################
 
         ##########################################
@@ -325,7 +342,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.Y_max = 10.0
 
-        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: Y_max: " + str(self.Y_max))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: Y_max: " + str(self.Y_max))
         ##########################################
 
         ##########################################
@@ -334,7 +351,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.XaxisAutoscaleFlag = 1
 
-        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: XaxisAutoscaleFlag: " + str(self.XaxisAutoscaleFlag))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: XaxisAutoscaleFlag: " + str(self.XaxisAutoscaleFlag))
 
         if self.XaxisAutoscaleFlag == 1:
             self.X_min = 0  # Have to override any other X_min, X_max values that may have been passed-in in the setup_dict
@@ -347,7 +364,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.YaxisAutoscaleFlag = 1
 
-        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: YaxisAutoscaleFlag: " + str(self.YaxisAutoscaleFlag))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: YaxisAutoscaleFlag: " + str(self.YaxisAutoscaleFlag))
 
         if self.YaxisAutoscaleFlag == 1:
             self.Y_min = 0  # Have to override any other X_min, X_max values that may have been passed-in in the setup_dict
@@ -360,7 +377,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.XaxisDrawnAtBottomOfGraph = 1
 
-        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: XaxisDrawnAtBottomOfGraph: " + str(self.XaxisDrawnAtBottomOfGraph))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: XaxisDrawnAtBottomOfGraph: " + str(self.XaxisDrawnAtBottomOfGraph))
         ##########################################
 
         ##########################################
@@ -369,7 +386,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.ShowLegendFlag = 0
 
-        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: ShowLegendFlag: " + str(self.ShowLegendFlag))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: ShowLegendFlag: " + str(self.ShowLegendFlag))
         ##########################################
 
         ##########################################
@@ -378,7 +395,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.XaxisLabelString = ""
 
-        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: XaxisLabelString: " + str(self.XaxisLabelString))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: XaxisLabelString: " + str(self.XaxisLabelString))
         ##########################################
 
         ##########################################
@@ -387,7 +404,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             self.YaxisLabelString = ""
 
-        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init: YaxisLabelString: " + str(self.YaxisLabelString))
+        print("MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class __init__: YaxisLabelString: " + str(self.YaxisLabelString))
         ##########################################
 
         ##########################################
@@ -534,7 +551,8 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
                 self.MostRecentDataDict = dict([("CurvesToPlotDictOfDicts", self.CurvesToPlotDictOfDicts),
                                                 ("StandAlonePlottingProcess_ReadyForWritingFlag", self.StandAlonePlottingProcess_ReadyForWritingFlag)])
 
-                MultiprocessingQueue_Tx_Local.put(self.MostRecentDataDict)
+                #deepcopy is required (beyond .copy() ) because self.MostRecentDataDict contains a dict.
+                MultiprocessingQueue_Tx_Local.put(deepcopy(self.MostRecentDataDict)) #unicorn
 
                 time.sleep(0.005) #THIS IS THE MAGIC LINE THAT ALLOWS WORKING ON RASPBERRY-PI
 
@@ -589,15 +607,6 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
         else:
             return 0
 
-    ##########################################################################################################
-    ##########################################################################################################
-
-    ##########################################################################################################
-    ##########################################################################################################
-    def IsInputList(self, InputToCheck):
-
-        result = isinstance(InputToCheck, list)
-        return result
     ##########################################################################################################
     ##########################################################################################################
 
@@ -783,47 +792,6 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
 
     ##########################################################################################################
     ##########################################################################################################
-    def ConvertFloatToStringWithNumberOfLeadingNumbersAndDecimalPlaces_NumberOrListInput(self, input, number_of_leading_numbers=4, number_of_decimal_places=3):
-        IsListFlag = self.IsInputList(input)
-
-        if IsListFlag == 0:
-            float_number_list = [input]
-        else:
-            float_number_list = list(input)
-
-        float_number_list_as_strings = []
-        for element in float_number_list:
-            try:
-                element = float(element)
-                prefix_string = "{:." + str(number_of_decimal_places) + "f}"
-                element_as_string = prefix_string.format(element)
-                float_number_list_as_strings.append(element_as_string)
-            except:
-                self.MyPrint_WithoutLogFile(self.TellWhichFileWereIn() + ": ConvertFloatToStringWithNumberOfLeadingNumbersAndDecimalPlaces_NumberOrListInput ERROR: " + str(element) + " cannot be turned into a float")
-                return -1
-
-        StringToReturn = ""
-        if IsListFlag == 0:
-            StringToReturn = float_number_list_as_strings[0].zfill(number_of_leading_numbers + number_of_decimal_places + 1 + 1)  # +1 for sign, +1 for decimal place
-        else:
-            StringToReturn = "["
-            for index, StringElement in enumerate(float_number_list_as_strings):
-                if float_number_list[index] >= 0:
-                    StringElement = "+" + StringElement  # So that our strings always have either + or - signs to maintain the same string length
-
-                StringElement = StringElement.zfill(number_of_leading_numbers + number_of_decimal_places + 1 + 1)  # +1 for sign, +1 for decimal place
-
-                if index != len(float_number_list_as_strings) - 1:
-                    StringToReturn = StringToReturn + StringElement + ", "
-                else:
-                    StringToReturn = StringToReturn + StringElement + "]"
-
-        return StringToReturn
-    ##########################################################################################################
-    ##########################################################################################################
-
-    ##########################################################################################################
-    ##########################################################################################################
     def AddCurveToPlot(self, CurveName, Color):
         if CurveName not in self.CurvesToPlotDictOfDicts:
             self.CurvesToPlotDictOfDicts[CurveName] = (dict([("CurveName", CurveName), ("Color", Color), ("PointToDrawList", []), ("AddPointOrListOfPointsToPlot_TimeLastCalled", -11111.0)]))
@@ -946,6 +914,7 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
 
         ###################################################
         ###################################################
+        self.root.title(self.GraphCanvasWindowTitle)
         self.root.protocol("WM_DELETE_WINDOW", self.ExitProgram_Callback)
         self.root.after(self.GUI_RootAfterCallbackInterval_Milliseconds_IndependentOfParentRootGUIloopEvents, self.__GUI_update_clock)
         self.root.geometry('%dx%d+%d+%d' % (self.GraphCanvasWidth, self.GraphCanvasHeight+20, self.GraphCanvasWindowStartingX, self.GraphCanvasWindowStartingY)) #+20 for debug_label
@@ -1298,5 +1267,176 @@ class MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class(Frame): #Subc
                     self.PrintToGui_Label_TextInput_Str = self.PrintToGui_Label_TextInput_Str + "\n"
             ################################
 
+    ##########################################################################################################
+    ##########################################################################################################
+
+    ##########################################################################################################
+    ##########################################################################################################
+    def IsInputList(self, InputToCheck):
+
+        result = isinstance(InputToCheck, list)
+        return result
+    ##########################################################################################################
+    ##########################################################################################################
+
+    ##########################################################################################################
+    ##########################################################################################################
+    ##########################################################################################################
+    ##########################################################################################################
+    def ConvertFloatToStringWithNumberOfLeadingNumbersAndDecimalPlaces_NumberOrListInput(self, input, number_of_leading_numbers = 4, number_of_decimal_places = 3):
+
+        number_of_decimal_places = max(1, number_of_decimal_places) #Make sure we're above 1
+
+        ListOfStringsToJoin = []
+
+        ##########################################################################################################
+        ##########################################################################################################
+        ##########################################################################################################
+        if isinstance(input, str) == 1:
+            ListOfStringsToJoin.append(input)
+        ##########################################################################################################
+        ##########################################################################################################
+        ##########################################################################################################
+
+        ##########################################################################################################
+        ##########################################################################################################
+        ##########################################################################################################
+        elif isinstance(input, int) == 1 or isinstance(input, float) == 1:
+            element = float(input)
+            prefix_string = "{:." + str(number_of_decimal_places) + "f}"
+            element_as_string = prefix_string.format(element)
+
+            ##########################################################################################################
+            ##########################################################################################################
+            if element >= 0:
+                element_as_string = element_as_string.zfill(number_of_leading_numbers + number_of_decimal_places + 1 + 1)  # +1 for sign, +1 for decimal place
+                element_as_string = "+" + element_as_string  # So that our strings always have either + or - signs to maintain the same string length
+            else:
+                element_as_string = element_as_string.zfill(number_of_leading_numbers + number_of_decimal_places + 1 + 1 + 1)  # +1 for sign, +1 for decimal place
+            ##########################################################################################################
+            ##########################################################################################################
+
+            ListOfStringsToJoin.append(element_as_string)
+        ##########################################################################################################
+        ##########################################################################################################
+        ##########################################################################################################
+
+        ##########################################################################################################
+        ##########################################################################################################
+        ##########################################################################################################
+        elif isinstance(input, list) == 1:
+
+            if len(input) > 0:
+                for element in input: #RECURSION
+                    ListOfStringsToJoin.append(self.ConvertFloatToStringWithNumberOfLeadingNumbersAndDecimalPlaces_NumberOrListInput(element, number_of_leading_numbers, number_of_decimal_places))
+
+            else: #Situation when we get a list() or []
+                ListOfStringsToJoin.append(str(input))
+
+        ##########################################################################################################
+        ##########################################################################################################
+        ##########################################################################################################
+
+        ##########################################################################################################
+        ##########################################################################################################
+        ##########################################################################################################
+        elif isinstance(input, tuple) == 1:
+
+            if len(input) > 0:
+                for element in input: #RECURSION
+                    ListOfStringsToJoin.append("TUPLE" + self.ConvertFloatToStringWithNumberOfLeadingNumbersAndDecimalPlaces_NumberOrListInput(element, number_of_leading_numbers, number_of_decimal_places))
+
+            else: #Situation when we get a list() or []
+                ListOfStringsToJoin.append(str(input))
+
+        ##########################################################################################################
+        ##########################################################################################################
+        ##########################################################################################################
+
+        ##########################################################################################################
+        ##########################################################################################################
+        ##########################################################################################################
+        elif isinstance(input, dict) == 1:
+
+            if len(input) > 0:
+                for Key in input: #RECURSION
+                    ListOfStringsToJoin.append(str(Key) + ": " + self.ConvertFloatToStringWithNumberOfLeadingNumbersAndDecimalPlaces_NumberOrListInput(input[Key], number_of_leading_numbers, number_of_decimal_places))
+
+            else: #Situation when we get a dict()
+                ListOfStringsToJoin.append(str(input))
+
+        ##########################################################################################################
+        ##########################################################################################################
+        ##########################################################################################################
+        else:
+            ListOfStringsToJoin.append(str(input))
+        ##########################################################################################################
+        ##########################################################################################################
+        ##########################################################################################################
+
+        ##########################################################################################################
+        ##########################################################################################################
+        ##########################################################################################################
+
+        ##########################################################################################################
+        ##########################################################################################################
+        ##########################################################################################################
+        if len(ListOfStringsToJoin) > 1:
+
+            ##########################################################################################################
+            ##########################################################################################################
+
+            ##########################################################################################################
+            StringToReturn = ""
+            for Index, StringToProcess in enumerate(ListOfStringsToJoin):
+
+                ################################################
+                if Index == 0: #The first element
+                    if StringToProcess.find(":") != -1 and StringToProcess[0] != "{": #meaning that we're processing a dict()
+                        StringToReturn = "{"
+                    elif StringToProcess.find("TUPLE") != -1 and StringToProcess[0] != "(":  # meaning that we're processing a tuple
+                        StringToReturn = "("
+                    else:
+                        StringToReturn = "["
+
+                    StringToReturn = StringToReturn + StringToProcess.replace("TUPLE","") + ", "
+                ################################################
+
+                ################################################
+                elif Index < len(ListOfStringsToJoin) - 1: #The middle elements
+                    StringToReturn = StringToReturn + StringToProcess + ", "
+                ################################################
+
+                ################################################
+                else: #The last element
+                    StringToReturn = StringToReturn + StringToProcess
+
+                    if StringToProcess.find(":") != -1 and StringToProcess[-1] != "}":  # meaning that we're processing a dict()
+                        StringToReturn = StringToReturn + "}"
+                    elif StringToProcess.find("TUPLE") != -1 and StringToProcess[-1] != ")":  # meaning that we're processing a tuple
+                        StringToReturn = StringToReturn + ")"
+                    else:
+                        StringToReturn = StringToReturn + "]"
+
+                ################################################
+
+            ##########################################################################################################
+
+            ##########################################################################################################
+            ##########################################################################################################
+
+        elif len(ListOfStringsToJoin) == 1:
+            StringToReturn = ListOfStringsToJoin[0]
+
+        else:
+            StringToReturn = ListOfStringsToJoin
+
+        return StringToReturn
+        ##########################################################################################################
+        ##########################################################################################################
+        ##########################################################################################################
+
+    ##########################################################################################################
+    ##########################################################################################################
     ##########################################################################################################
     ##########################################################################################################
