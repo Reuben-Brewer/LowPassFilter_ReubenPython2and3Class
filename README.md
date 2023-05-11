@@ -2,7 +2,9 @@
 
 LowPassFilter_ReubenPython2and3Class
 
-A class for applying a low-pass filter to incoming data, including optional median-filtering (calculating a rolling 5-point-median with the Bose-Nelson algorithm) and optional exponential-smoothing (https://en.wikipedia.org/wiki/Exponential_smoothing). 
+A class for applying a low-pass filter to incoming data, including 
+optional median-filtering (calculating a rolling 5-point-median with the Bose-Nelson algorithm) and 
+optional exponential-smoothing (https://en.wikipedia.org/wiki/Exponential_smoothing). 
 
 Reuben Brewer, Ph.D.
 
@@ -12,7 +14,7 @@ www.reubotics.com
 
 Apache 2 License
 
-Software Revision G, 09/21/2022
+Software Revision H, 05/10/2023
 
 Verified working on: 
 
@@ -36,6 +38,6 @@ LowPassFilter_ReubenPython2and3Class, ListOfModuleDependencies_TestProgram: ['My
 
 LowPassFilter_ReubenPython2and3Class, ListOfModuleDependencies_NestedLayers: ['future.builtins', 'numpy', 'pexpect', 'psutil']
 
-LowPassFilter_ReubenPython2and3Class, ListOfModuleDependencies_All: ['future.builtins', 'MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class', 'numpy', 'pexpect', 'psutil']
+LowPassFilter_ReubenPython2and3Class, ListOfModuleDependencies_All:['future.builtins', 'MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class', 'numpy', 'pexpect', 'psutil']
 
 ###########################
