@@ -3,7 +3,7 @@
 LowPassFilter_ReubenPython2and3Class
 
 A class for applying a low-pass filter to incoming data, including 
-optional median-filtering (calculating a rolling 5-point-median with the Bose-Nelson algorithm) and 
+optional median-filtering (calculating a rolling N-point-median with the Bose-Nelson algorithm) and
 optional exponential-smoothing (https://en.wikipedia.org/wiki/Exponential_smoothing). 
 
 Reuben Brewer, Ph.D.
@@ -14,13 +14,18 @@ www.reubotics.com
 
 Apache 2 License
 
-Software Revision I, 07/18/2023
+Software Revision J, 11/10/2024
 
-Verified working on: 
+Verified working on:
+
 Python 2.7, 3.8.
+
 Windows 8.1, 10 64-bit
+
 Ubuntu 20.04
-Raspberry Pi Buster 
+
+Raspberry Pi Buster
+
 (no Mac testing yet)
 
 ########################  
@@ -28,8 +33,11 @@ Raspberry Pi Buster
 ########################### Python module installation instructions, all OS's
 
 LowPassFilter_ReubenPython2and3Class, ListOfModuleDependencies: ['numpy']
-LowPassFilter_ReubenPython2and3Class, ListOfModuleDependencies_TestProgram: ['MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class']
+
+LowPassFilter_ReubenPython2and3Class, ListOfModuleDependencies_TestProgram: ['keyboard', 'MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class']
+
 LowPassFilter_ReubenPython2and3Class, ListOfModuleDependencies_NestedLayers: ['future.builtins', 'numpy', 'pexpect', 'psutil']
-LowPassFilter_ReubenPython2and3Class, ListOfModuleDependencies_All:['future.builtins', 'MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class', 'numpy', 'pexpect', 'psutil']
+
+LowPassFilter_ReubenPython2and3Class, ListOfModuleDependencies_All:['future.builtins', 'keyboard', 'MyPlotterPureTkinterStandAloneProcess_ReubenPython2and3Class', 'numpy', 'pexpect', 'psutil']
 
 ###########################
