@@ -17,10 +17,15 @@ Apache 2 License
 Software Revision J, 11/10/2024
 
 Verified working on: 
-Python 2.7, 3.8.
+
+Python 2.7, 3.12.
+
 Windows 8.1, 10 64-bit
+
 Ubuntu 20.04
+
 Raspberry Pi Buster 
+
 (no Mac testing yet)
 
 ########################  
